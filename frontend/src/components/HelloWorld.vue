@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {ref, onMounted} from 'vue'
 import {GetDockerInfo} from '../../wailsjs/go/main/App'
+import {docker} from '../../wailsjs/go/models'
 
-const docker = ref({ version: '', apiVersion: '' })
+const dockerInfo = ref<docker.DockerInfo>(new docker.DockerInfo({ version: '', apiVersion: '' }))
 const loading = ref<boolean>(true)
-const error = ref<unknown | null>(null)
+const error = ref<string | null>(null)
 
 const fetchDockerInfo = async () => {
   loading.value = true
@@ -12,10 +13,10 @@ const fetchDockerInfo = async () => {
   try {
     // Llamada directa al método de Go como si fuera una función de JS
     const data = await GetDockerInfo()
-    docker.value = data
+    dockerInfo.value = data
   } catch (err) {
-    // Si Go devuelve un error, se captura aquí en el bloque catch
-    error.value = err
+    // Si Go devuelve un error, Wails rechaza la promesa con el mensaje (string)
+    error.value = String(err)
   } finally {
     loading.value = false
   }
@@ -38,8 +39,8 @@ onMounted(() => {
     </div>
     
     <div v-else class="version-info">
-      <p><strong>Versión de Docker:</strong> {{ docker.version }}</p>
-      <p><strong>Versión de la API:</strong> {{ docker.apiVersion }}</p>
+      <p><strong>Versión de Docker:</strong> {{ dockerInfo.version }}</p>
+      <p><strong>Versión de la API:</strong> {{ dockerInfo.apiVersion }}</p>
     </div>
 
     <button @click="fetchDockerInfo">Actualizar</button>

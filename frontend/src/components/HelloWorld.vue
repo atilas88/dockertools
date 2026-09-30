@@ -1,71 +1,58 @@
 <script lang="ts" setup>
-import {reactive} from 'vue'
-import {Greet} from '../../wailsjs/go/main/App'
+import {ref, onMounted} from 'vue'
+import {GetDockerInfo} from '../../wailsjs/go/main/App'
 
-const data = reactive({
-  name: "",
-  resultText: "Please enter your name below 👇",
-})
+const docker = ref({ version: '', apiVersion: '' })
+const loading = ref<boolean>(true)
+const error = ref<unknown | null>(null)
 
-function greet() {
-  Greet(data.name).then(result => {
-    data.resultText = result
-  })
+const fetchDockerInfo = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    // Llamada directa al método de Go como si fuera una función de JS
+    const data = await GetDockerInfo()
+    docker.value = data
+  } catch (err) {
+    // Si Go devuelve un error, se captura aquí en el bloque catch
+    error.value = err
+  } finally {
+    loading.value = false
+  }
 }
+
+onMounted(() => {
+  fetchDockerInfo()
+})
 
 </script>
 
 <template>
   <main>
-    <div id="result" class="result">{{ data.resultText }}</div>
-    <div id="input" class="input-box">
-      <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
-      <button class="btn" @click="greet">Greet</button>
+    <h2>Información de Docker</h2>
+    
+    <div v-if="loading">Cargando datos de Docker...</div>
+    
+    <div v-else-if="error" class="error-message">
+      {{ error }}
     </div>
+    
+    <div v-else class="version-info">
+      <p><strong>Versión de Docker:</strong> {{ docker.version }}</p>
+      <p><strong>Versión de la API:</strong> {{ docker.apiVersion }}</p>
+    </div>
+
+    <button @click="fetchDockerInfo">Actualizar</button>
   </main>
 </template>
 
 <style scoped>
-.result {
-  height: 20px;
-  line-height: 20px;
-  margin: 1.5rem auto;
+.error-message {
+  color: #ff4d4d;
+  font-weight: bold;
 }
-
-.input-box .btn {
-  width: 60px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 3px;
-  border: none;
-  margin: 0 0 0 20px;
-  padding: 0 8px;
-  cursor: pointer;
-}
-
-.input-box .btn:hover {
-  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-  color: #333333;
-}
-
-.input-box .input {
-  border: none;
-  border-radius: 3px;
-  outline: none;
-  height: 30px;
-  line-height: 30px;
-  padding: 0 10px;
-  background-color: rgba(240, 240, 240, 1);
-  -webkit-font-smoothing: antialiased;
-}
-
-.input-box .input:hover {
-  border: none;
-  background-color: rgba(255, 255, 255, 1);
-}
-
-.input-box .input:focus {
-  border: none;
-  background-color: rgba(255, 255, 255, 1);
+.version-info p {
+  font-size: 1.1em;
+  margin: 8px 0;
 }
 </style>

@@ -3,5 +3,3 @@
 import {docker} from '../models';
 
 export function GetDockerInfo():Promise<docker.DockerInfo>;
-
-export function Greet(arg1:string):Promise<string>;

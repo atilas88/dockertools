@@ -5,7 +5,3 @@
 export function GetDockerInfo() {
   return window['go']['main']['App']['GetDockerInfo']();
 }
-
-export function Greet(arg1) {
-  return window['go']['main']['App']['Greet'](arg1);
-}

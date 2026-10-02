@@ -34,10 +34,10 @@ func (s *Service) Close() error {
 }
 
 func (s *Service) GetDockerInfo(ctx context.Context) (DockerInfo, error) {
-	context, cancel := context.WithTimeout(ctx, 3*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 
-	serverVersion, err := s.cli.ServerVersion(context, client.ServerVersionOptions{})
+	serverVersion, err := s.cli.ServerVersion(ctx, client.ServerVersionOptions{})
 	if err != nil {
 		return DockerInfo{}, fmt.Errorf("error al obtener la versión del servidor: %w", err)
 	}

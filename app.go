@@ -33,3 +33,7 @@ func (a *App) shutdown(ctx context.Context) {
 func (a *App) GetDockerInfo() (docker.DockerInfo, error) {
 	return a.service.GetDockerInfo(a.ctx)
 }
+
+func (a *App) GetDockerStatus() error {
+	return a.service.Ping(a.ctx)
+}

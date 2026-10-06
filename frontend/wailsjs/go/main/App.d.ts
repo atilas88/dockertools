@@ -3,3 +3,5 @@
 import {docker} from '../models';
 
 export function GetDockerInfo():Promise<docker.DockerInfo>;
+
+export function GetDockerStatus():Promise<void>;

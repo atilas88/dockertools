@@ -5,3 +5,7 @@
 export function GetDockerInfo() {
   return window['go']['main']['App']['GetDockerInfo']();
 }
+
+export function GetDockerStatus() {
+  return window['go']['main']['App']['GetDockerStatus']();
+}

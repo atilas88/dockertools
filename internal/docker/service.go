@@ -12,6 +12,8 @@ type Service struct {
 	cli *client.Client
 }
 
+const defaultTimeout = 3 * time.Second
+
 // NewService creates a new instance of the Service
 func NewService(cli *client.Client) (*Service, error) {
 	if cli == nil {
@@ -34,7 +36,7 @@ func (s *Service) Close() error {
 }
 
 func (s *Service) GetDockerInfo(ctx context.Context) (DockerInfo, error) {
-	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
 	serverVersion, err := s.cli.ServerVersion(ctx, client.ServerVersionOptions{})
@@ -45,4 +47,11 @@ func (s *Service) GetDockerInfo(ctx context.Context) (DockerInfo, error) {
 		Version:    serverVersion.Version,
 		APIVersion: serverVersion.APIVersion,
 	}, nil
+}
+
+func (s *Service) Ping(ctx context.Context) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.Ping(ctx, client.PingOptions{})
+	return err
 }

@@ -1,26 +1,34 @@
-html {
-    background-color: rgba(27, 38, 54, 1);
-    text-align: center;
-    color: white;
-}
+/* dockertools — app shell (layout only). Requires tokens.css and dockertools.css. */
+[data-theme="dark"] { color-scheme: dark; }
+[data-theme="light"] { color-scheme: light; }
 
+html, body { margin: 0; height: 100%; }
 body {
-    margin: 0;
-    color: white;
-    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  background: var(--bg-000); color: var(--ink); font-family: var(--font-sans);
+  overflow: hidden;
+}
+#app { height: 100%; display: flex; flex-direction: column; }
+
+.titlebar {
+  height: var(--titlebar-height); flex: none; display: flex; align-items: center; gap: var(--space-3);
+  padding: 0 var(--space-4); background: var(--bg-100); border-bottom: 1px solid var(--line);
+}
+.brand { font: 600 14px/1 var(--font-sans); display: flex; align-items: center; gap: var(--space-2); }
+.brand i { width: 10px; height: 10px; border-radius: 2px; background: var(--accent); display: inline-block; }
+.ctx {
+  margin-left: auto; display: flex; align-items: center; gap: var(--space-2);
+  font: 400 12px/1 var(--font-mono); color: var(--ink-muted);
 }
 
-@font-face {
-    font-family: "Nunito";
-    font-style: normal;
-    font-weight: 400;
-    src: local(""),
-    url("assets/fonts/nunito-v16-latin-regular.woff2") format("woff2");
-}
+.shell { flex: 1; display: flex; min-height: 0; }
+.shell > main { flex: 1; overflow: auto; padding: var(--space-6); }
 
-#app {
-    height: 100vh;
-    text-align: center;
-}
+.head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap; }
+.head h1 { margin: 0 auto 0 0; }
+.meta { margin: -8px 0 var(--space-4); color: var(--ink-muted); }
+.empty { padding: var(--space-6); color: var(--ink-muted); text-align: center; }
+
+.dt-table tbody tr { cursor: pointer; }
+.dt-actions .dt-btn { margin-left: 2px; }
+
+@media (max-width: 720px) { .dt-sidebar { display: none; } }

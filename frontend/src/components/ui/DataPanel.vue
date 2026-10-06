@@ -22,3 +22,8 @@ defineProps<{ columns: number; empty?: boolean; emptyText?: string; loading?: bo
     </table>
   </div>
 </template>
+
+<style scoped>
+/* Narrow windows: scroll the table instead of clipping the action column. */
+.dt-panel { overflow-x: auto; }
+</style>

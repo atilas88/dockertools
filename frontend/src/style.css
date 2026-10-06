@@ -21,6 +21,7 @@ body {
 }
 
 .shell { flex: 1; display: flex; min-height: 0; }
+.shell > .dt-sidebar { flex: none; }
 .shell > main { flex: 1; overflow: auto; padding: var(--space-6); }
 
 .head { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); flex-wrap: wrap; }

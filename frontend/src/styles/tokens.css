@@ -1,0 +1,87 @@
+/* dockertools — design tokens (generado desde tokens.json) */
+:root, [data-theme="dark"] {
+  --bg-000: #0e1116;
+  --bg-100: #151a21;
+  --bg-200: #1c222b;
+  --bg-300: #252c37;
+  --code-bg: #0a0d11;
+  --line: #2b333f;
+  --line-strong: #637083;
+  --ink: #e6e9ee;
+  --ink-muted: #9aa4b2;
+  --accent: #2ec4b6;
+  --on-accent: #06201e;
+  --accent-soft: #12302f;
+  --focus: #7fe3da;
+  --status-running: #3fcf7a;
+  --status-running-soft: #12301f;
+  --status-paused: #f0b429;
+  --status-paused-soft: #33280f;
+  --status-exited: #8b95a3;
+  --status-exited-soft: #232a33;
+  --status-error: #ff7a59;
+  --status-error-soft: #3a1d16;
+  --status-restarting: #5aa9ff;
+  --status-restarting-soft: #152a45;
+  --shadow-popover: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+[data-theme="light"] {
+  --bg-000: #f6f7f9;
+  --bg-100: #ffffff;
+  --bg-200: #eef0f3;
+  --bg-300: #e3e7ec;
+  --code-bg: #f0f2f5;
+  --line: #d5dae1;
+  --line-strong: #8a94a1;
+  --ink: #141a22;
+  --ink-muted: #5b6573;
+  --accent: #0a7a71;
+  --on-accent: #ffffff;
+  --accent-soft: #dcf2ef;
+  --focus: #0a7a71;
+  --status-running: #176f3c;
+  --status-running-soft: #e0f3e7;
+  --status-paused: #8a5a00;
+  --status-paused-soft: #fbf0d9;
+  --status-exited: #5b6573;
+  --status-exited-soft: #eceff2;
+  --status-error: #b3361a;
+  --status-error-soft: #fbe5df;
+  --status-restarting: #1f5fbf;
+  --status-restarting-soft: #e1ecfb;
+  --shadow-popover: 0 8px 24px rgba(20,26,34,0.14);
+}
+
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-pill: 999px;
+  --titlebar-height: 40px;
+  --sidebar-width: 220px;
+  --row-height: 40px;
+  --control-height: 32px;
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+.display { font-family: var(--font-sans); font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.01em; }
+
+.title { font-family: var(--font-sans); font-size: 16px; line-height: 22px; font-weight: 600; }
+
+.body { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+
+.label { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 400; }
+
+.mono { font-family: var(--font-mono); font-size: 13px; line-height: 20px; font-weight: 400; }
+
+.mono-sm { font-family: var(--font-mono); font-size: 12px; line-height: 18px; font-weight: 400; }

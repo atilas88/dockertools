@@ -21,3 +21,7 @@ const emit = defineEmits<{ select: []; action: [action: ContainerAction] }>()
     </td>
   </tr>
 </template>
+
+<style scoped>
+tr { cursor: pointer; }
+</style>

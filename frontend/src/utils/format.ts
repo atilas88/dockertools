@@ -14,7 +14,7 @@ export function timeAgo(unixSeconds: number, now = Date.now() / 1000): string {
   return rtf.format(0, 'second')
 }
 
-// Decimal units, like the Docker CLI ("243 MB").
+// Decimal units with 3 significant digits, like the Docker CLI ("47.9 MB").
 export function formatBytes(bytes: number): string {
   if (bytes < 0) return '—'
   const units = ['B', 'kB', 'MB', 'GB', 'TB']
@@ -24,5 +24,5 @@ export function formatBytes(bytes: number): string {
     n /= 1000
     i++
   }
-  return `${n < 10 && i > 0 ? n.toFixed(1) : Math.round(n)} ${units[i]}`
+  return `${Number(n.toPrecision(3))} ${units[i]}`
 }

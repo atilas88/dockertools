@@ -9,3 +9,7 @@ export function GetDockerInfo() {
 export function GetDockerStatus() {
   return window['go']['main']['App']['GetDockerStatus']();
 }
+
+export function ListContainers() {
+  return window['go']['main']['App']['ListContainers']();
+}

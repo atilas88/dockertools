@@ -37,3 +37,7 @@ func (a *App) GetDockerInfo() (docker.DockerInfo, error) {
 func (a *App) GetDockerStatus() error {
 	return a.service.Ping(a.ctx)
 }
+
+func (a *App) ListContainers() ([]docker.Container, error) {
+	return a.service.ListContainers(a.ctx)
+}

@@ -1,11 +1,10 @@
 import {computed} from 'vue'
-import {containers as mockContainers} from '../mocks/containers'
 import {mockResponse} from '../mocks/delay'
+import {ListContainers} from '../../wailsjs/go/main/App'
 import type {Container, ContainerAction, ContainerState} from '../types/docker'
 import {createListStore} from './createListStore'
 
-// TODO etapa 2: return ListContainers() from wailsjs/go/main/App.
-const useStore = createListStore<Container>(() => mockResponse(mockContainers))
+const useStore = createListStore<Container>(ListContainers)
 
 // State each action leaves the container in (mock only).
 const targetState: Record<Exclude<ContainerAction, 'remove'>, ContainerState> = {

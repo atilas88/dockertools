@@ -5,3 +5,5 @@ import {docker} from '../models';
 export function GetDockerInfo():Promise<docker.DockerInfo>;
 
 export function GetDockerStatus():Promise<void>;
+
+export function ListContainers():Promise<Array<docker.Container>>;

@@ -2,7 +2,11 @@
 // and the binding is generated, prefer the class from wailsjs/go/models and
 // keep these in sync (or replace them).
 
-export type ContainerState = 'created' | 'running' | 'paused' | 'restarting' | 'removing' | 'exited' | 'dead'
+import type {docker} from '../../wailsjs/go/models'
+
+// Union of the values of the Go enum (EnumBind), so literals like 'running'
+// still type-check and the generated docker.ContainerState is assignable.
+export type ContainerState = `${docker.ContainerState}`
 
 export interface Container {
   id: string        // short ID (12 chars)

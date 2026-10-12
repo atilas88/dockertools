@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"strings"
+
+	"github.com/moby/moby/api/types/container"
 	"github.com/moby/moby/client"
 )
 
@@ -55,4 +58,46 @@ func (s *Service) Ping(ctx context.Context) error {
 	defer cancel()
 	_, err := s.cli.Ping(ctx, client.PingOptions{})
 	return err
+}
+
+func (s *Service) ListContainers(ctx context.Context) ([]Container, error) {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+
+	containers, err := s.cli.ContainerList(ctx, client.ContainerListOptions{All: true})
+	if err != nil {
+		return nil, fmt.Errorf("error al listar los contenedores: %w", err)
+	}
+
+	result := make([]Container, 0, len(containers.Items))
+	for _, c := range containers.Items {
+		var exitCode *int
+		if c.State == container.StateExited {
+			var code int
+			if _, err := fmt.Sscanf(c.Status, "Exited (%d)", &code); err == nil {
+				exitCode = &code
+			}
+		}
+		result = append(result, Container{
+			ID:       c.ID[:12],
+			Name:     strings.TrimPrefix(c.Names[0], "/"),
+			Image:    c.Image,
+			State:    ContainerState(c.State),
+			ExitCode: exitCode,
+			Ports:    formatPorts(c.Ports),
+			Created:  c.Created,
+		})
+	}
+	return result, nil
+}
+
+func formatPorts(ps []container.PortSummary) []string {
+	out := make([]string, 0, len(ps))
+	for _, p := range ps {
+		if p.PublicPort == 0 {
+			continue // puerto expuesto pero no publicado
+		}
+		out = append(out, fmt.Sprintf("%d→%d", p.PublicPort, p.PrivatePort))
+	}
+	return out
 }

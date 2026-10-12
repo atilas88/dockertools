@@ -36,6 +36,9 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
+		EnumBind: []interface{}{
+			docker.AllContainerStates,
+		},
 	})
 
 	if err != nil {

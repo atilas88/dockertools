@@ -9,8 +9,8 @@ const state = ref<ConnectionState>('checking')
 const info = ref<docker.DockerInfo | null>(null)
 const error = ref<string | null>(null)
 
-// TODO etapa 1: expose cli.DaemonHost() from Go instead of this mock.
-const host = ref('unix:///var/run/docker.sock')
+
+const host = ref<string>('')
 
 export function useDockerStatus() {
   async function refresh() {
@@ -20,6 +20,7 @@ export function useDockerStatus() {
       // Ping first: it fails fast (3s timeout in Go) when the daemon is down.
       await GetDockerStatus()
       info.value = await GetDockerInfo()
+      host.value = info.value.host
       state.value = 'connected'
     } catch (err) {
       // Wails rejects the promise with the Go error message (string).

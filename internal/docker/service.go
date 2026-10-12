@@ -46,6 +46,7 @@ func (s *Service) GetDockerInfo(ctx context.Context) (DockerInfo, error) {
 	return DockerInfo{
 		Version:    serverVersion.Version,
 		APIVersion: serverVersion.APIVersion,
+		Host:       s.cli.DaemonHost(),
 	}, nil
 }
 

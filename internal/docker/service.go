@@ -101,3 +101,45 @@ func formatPorts(ps []container.PortSummary) []string {
 	}
 	return out
 }
+
+func (s *Service) StopContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerStop(ctx, containerID, client.ContainerStopOptions{})
+	return err
+}
+
+func (s *Service) StartContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerStart(ctx, containerID, client.ContainerStartOptions{})
+	return err
+}
+
+func (s *Service) RemoveContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerRemove(ctx, containerID, client.ContainerRemoveOptions{Force: true})
+	return err
+}
+
+func (s *Service) RestartContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerRestart(ctx, containerID, client.ContainerRestartOptions{})
+	return err
+}
+
+func (s *Service) PauseContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerPause(ctx, containerID, client.ContainerPauseOptions{})
+	return err
+}
+
+func (s *Service) UnpauseContainer(ctx context.Context, containerID string) error {
+	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	defer cancel()
+	_, err := s.cli.ContainerUnpause(ctx, containerID, client.ContainerUnpauseOptions{})
+	return err
+}

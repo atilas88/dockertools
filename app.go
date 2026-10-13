@@ -41,3 +41,27 @@ func (a *App) GetDockerStatus() error {
 func (a *App) ListContainers() ([]docker.Container, error) {
 	return a.service.ListContainers(a.ctx)
 }
+
+func (a *App) StartContainer(containerID string) error {
+	return a.service.StartContainer(a.ctx, containerID)
+}
+
+func (a *App) StopContainer(containerID string) error {
+	return a.service.StopContainer(a.ctx, containerID)
+}
+
+func (a *App) RemoveContainer(containerID string) error {
+	return a.service.RemoveContainer(a.ctx, containerID)
+}
+
+func (a *App) RestartContainer(containerID string) error {
+	return a.service.RestartContainer(a.ctx, containerID)
+}
+
+func (a *App) PauseContainer(containerID string) error {
+	return a.service.PauseContainer(a.ctx, containerID)
+}
+
+func (a *App) UnpauseContainer(containerID string) error {
+	return a.service.UnpauseContainer(a.ctx, containerID)
+}

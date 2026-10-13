@@ -13,3 +13,27 @@ export function GetDockerStatus() {
 export function ListContainers() {
   return window['go']['main']['App']['ListContainers']();
 }
+
+export function PauseContainer(arg1) {
+  return window['go']['main']['App']['PauseContainer'](arg1);
+}
+
+export function RemoveContainer(arg1) {
+  return window['go']['main']['App']['RemoveContainer'](arg1);
+}
+
+export function RestartContainer(arg1) {
+  return window['go']['main']['App']['RestartContainer'](arg1);
+}
+
+export function StartContainer(arg1) {
+  return window['go']['main']['App']['StartContainer'](arg1);
+}
+
+export function StopContainer(arg1) {
+  return window['go']['main']['App']['StopContainer'](arg1);
+}
+
+export function UnpauseContainer(arg1) {
+  return window['go']['main']['App']['UnpauseContainer'](arg1);
+}

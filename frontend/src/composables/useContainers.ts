@@ -1,18 +1,15 @@
 import {computed} from 'vue'
-import {mockResponse} from '../mocks/delay'
-import {ListContainers} from '../../wailsjs/go/main/App'
-import type {Container, ContainerAction, ContainerState} from '../types/docker'
+import {ListContainers, StartContainer, StopContainer,
+       PauseContainer, UnpauseContainer, RestartContainer,
+       RemoveContainer} from '../../wailsjs/go/main/App'
+import type {Container, ContainerAction} from '../types/docker'
 import {createListStore} from './createListStore'
 
 const useStore = createListStore<Container>(ListContainers)
 
-// State each action leaves the container in (mock only).
-const targetState: Record<Exclude<ContainerAction, 'remove'>, ContainerState> = {
-  start: 'running',
-  stop: 'exited',
-  restart: 'running',
-  pause: 'paused',
-  unpause: 'running',
+const bindings: Record<ContainerAction, (id: string) => Promise<void>> = {
+  start: StartContainer, stop: StopContainer, restart: RestartContainer,
+  pause: PauseContainer, unpause: UnpauseContainer, remove: RemoveContainer,
 }
 
 export function useContainers() {
@@ -21,24 +18,14 @@ export function useContainers() {
 
   const runningCount = computed(() => items.value.filter(c => c.state === 'running').length)
 
-  // TODO etapa 3: call the Go binding for each action and then refresh().
   async function runAction(id: string, action: ContainerAction) {
     const c = items.value.find(c => c.id === id)
-    if (!c) return
-
-    if (action === 'remove') {
-      await mockResponse(null)
-      items.value = items.value.filter(x => x.id !== id)
-      return
+    if (c) c.state = action === 'remove' ? 'removing' : 'restarting'
+    try {
+      await bindings[action](id)
+    } finally {
+      await store.refresh()
     }
-    if (action === 'pause' || action === 'unpause') {
-      c.state = targetState[action]
-      return
-    }
-    c.state = 'restarting'
-    await mockResponse(null, 900)
-    c.state = targetState[action]
-    c.exitCode = c.state === 'exited' ? 0 : undefined
   }
 
   return {...store, runningCount, runAction}

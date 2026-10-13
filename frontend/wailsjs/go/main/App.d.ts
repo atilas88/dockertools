@@ -7,3 +7,15 @@ export function GetDockerInfo():Promise<docker.DockerInfo>;
 export function GetDockerStatus():Promise<void>;
 
 export function ListContainers():Promise<Array<docker.Container>>;
+
+export function PauseContainer(arg1:string):Promise<void>;
+
+export function RemoveContainer(arg1:string):Promise<void>;
+
+export function RestartContainer(arg1:string):Promise<void>;
+
+export function StartContainer(arg1:string):Promise<void>;
+
+export function StopContainer(arg1:string):Promise<void>;
+
+export function UnpauseContainer(arg1:string):Promise<void>;

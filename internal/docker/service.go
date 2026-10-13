@@ -15,7 +15,10 @@ type Service struct {
 	cli *client.Client
 }
 
-const defaultTimeout = 3 * time.Second
+const (
+	defaultTimeout = 3 * time.Second
+	stopTimeout    = 15 * time.Second
+)
 
 // NewService creates a new instance of the Service
 func NewService(cli *client.Client) (*Service, error) {
@@ -78,9 +81,17 @@ func (s *Service) ListContainers(ctx context.Context) ([]Container, error) {
 				exitCode = &code
 			}
 		}
+		name := "-"
+		if len(c.Names) > 0 {
+			name = strings.TrimPrefix(c.Names[0], "/")
+		}
+		id := "-"
+		if len(c.ID) > 12 {
+			id = c.ID[:12]
+		}
 		result = append(result, Container{
-			ID:       c.ID[:12],
-			Name:     strings.TrimPrefix(c.Names[0], "/"),
+			ID:       id,
+			Name:     name,
 			Image:    c.Image,
 			State:    ContainerState(c.State),
 			ExitCode: exitCode,
@@ -103,7 +114,7 @@ func formatPorts(ps []container.PortSummary) []string {
 }
 
 func (s *Service) StopContainer(ctx context.Context, containerID string) error {
-	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	ctx, cancel := context.WithTimeout(ctx, stopTimeout)
 	defer cancel()
 	_, err := s.cli.ContainerStop(ctx, containerID, client.ContainerStopOptions{})
 	return err
@@ -124,7 +135,7 @@ func (s *Service) RemoveContainer(ctx context.Context, containerID string) error
 }
 
 func (s *Service) RestartContainer(ctx context.Context, containerID string) error {
-	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
+	ctx, cancel := context.WithTimeout(ctx, stopTimeout)
 	defer cancel()
 	_, err := s.cli.ContainerRestart(ctx, containerID, client.ContainerRestartOptions{})
 	return err

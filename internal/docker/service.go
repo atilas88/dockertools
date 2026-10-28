@@ -11,8 +11,27 @@ import (
 	"github.com/moby/moby/client"
 )
 
+// dockerAPI is the subset of *client.Client that Service uses.
+// Tests replace it with a fake
+type dockerAPI interface {
+	Ping(ctx context.Context, options client.PingOptions) (client.PingResult, error)
+	ServerVersion(ctx context.Context, options client.ServerVersionOptions) (client.ServerVersionResult, error)
+	DaemonHost() string
+	Close() error
+
+	ContainerList(ctx context.Context, options client.ContainerListOptions) (client.ContainerListResult, error)
+	ContainerStart(ctx context.Context, containerID string, options client.ContainerStartOptions) (client.ContainerStartResult, error)
+	ContainerStop(ctx context.Context, containerID string, options client.ContainerStopOptions) (client.ContainerStopResult, error)
+	ContainerRestart(ctx context.Context, containerID string, options client.ContainerRestartOptions) (client.ContainerRestartResult, error)
+	ContainerPause(ctx context.Context, containerID string, options client.ContainerPauseOptions) (client.ContainerPauseResult, error)
+	ContainerUnpause(ctx context.Context, containerID string, options client.ContainerUnpauseOptions) (client.ContainerUnpauseResult, error)
+	ContainerRemove(ctx context.Context, containerID string, options client.ContainerRemoveOptions) (client.ContainerRemoveResult, error)
+}
+
+var _ dockerAPI = (*client.Client)(nil)
+
 type Service struct {
-	cli *client.Client
+	cli dockerAPI
 }
 
 const (

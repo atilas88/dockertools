@@ -63,6 +63,36 @@ func (s *Service) Ping(ctx context.Context) error {
 	return err
 }
 
+func toContainer(c container.Summary) Container {
+	var exitCode *int
+	if c.State == container.StateExited {
+		var code int
+		if _, err := fmt.Sscanf(c.Status, "Exited (%d)", &code); err == nil {
+			exitCode = &code
+		}
+	}
+	name := "-"
+	if len(c.Names) > 0 {
+		name = strings.TrimPrefix(c.Names[0], "/")
+	}
+	id := c.ID
+	if len(c.ID) > 12 {
+		id = c.ID[:12]
+	}
+	if id == "" {
+		id = "-"
+	}
+	return Container{
+		ID:       id,
+		Name:     name,
+		Image:    c.Image,
+		State:    ContainerState(c.State),
+		ExitCode: exitCode,
+		Ports:    formatPorts(c.Ports),
+		Created:  c.Created,
+	}
+}
+
 func (s *Service) ListContainers(ctx context.Context) ([]Container, error) {
 	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
@@ -74,30 +104,8 @@ func (s *Service) ListContainers(ctx context.Context) ([]Container, error) {
 
 	result := make([]Container, 0, len(containers.Items))
 	for _, c := range containers.Items {
-		var exitCode *int
-		if c.State == container.StateExited {
-			var code int
-			if _, err := fmt.Sscanf(c.Status, "Exited (%d)", &code); err == nil {
-				exitCode = &code
-			}
-		}
-		name := "-"
-		if len(c.Names) > 0 {
-			name = strings.TrimPrefix(c.Names[0], "/")
-		}
-		id := "-"
-		if len(c.ID) > 12 {
-			id = c.ID[:12]
-		}
-		result = append(result, Container{
-			ID:       id,
-			Name:     name,
-			Image:    c.Image,
-			State:    ContainerState(c.State),
-			ExitCode: exitCode,
-			Ports:    formatPorts(c.Ports),
-			Created:  c.Created,
-		})
+
+		result = append(result, toContainer(c))
 	}
 	return result, nil
 }

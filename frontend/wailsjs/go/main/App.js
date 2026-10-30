@@ -10,8 +10,8 @@ export function GetDockerStatus() {
   return window['go']['main']['App']['GetDockerStatus']();
 }
 
-export function ListContainers() {
-  return window['go']['main']['App']['ListContainers']();
+export function ListContainers(arg1) {
+  return window['go']['main']['App']['ListContainers'](arg1);
 }
 
 export function PauseContainer(arg1) {

@@ -38,8 +38,8 @@ func (a *App) GetDockerStatus() error {
 	return a.service.Ping(a.ctx)
 }
 
-func (a *App) ListContainers() ([]docker.Container, error) {
-	return a.service.ListContainers(a.ctx)
+func (a *App) ListContainers(onlyRunning bool) ([]docker.Container, error) {
+	return a.service.ListContainers(a.ctx, docker.ListOptions{OnlyRunning: onlyRunning})
 }
 
 func (a *App) StartContainer(containerID string) error {

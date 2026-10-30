@@ -1,11 +1,15 @@
-import {computed} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {ListContainers, StartContainer, StopContainer,
        PauseContainer, UnpauseContainer, RestartContainer,
        RemoveContainer} from '../../wailsjs/go/main/App'
 import type {Container, ContainerAction} from '../types/docker'
 import {createListStore} from './createListStore'
 
-const useStore = createListStore<Container>(ListContainers)
+const onlyRunning = ref(false)
+
+const useStore = createListStore<Container>(() => ListContainers(onlyRunning.value))
+
+watch(onlyRunning, () => useStore().refresh())
 
 const bindings: Record<ContainerAction, (id: string) => Promise<void>> = {
   start: StartContainer, stop: StopContainer, restart: RestartContainer,
@@ -28,5 +32,5 @@ export function useContainers() {
     }
   }
 
-  return {...store, runningCount, runAction}
+  return {...store, runningCount, runAction, onlyRunning}
 }

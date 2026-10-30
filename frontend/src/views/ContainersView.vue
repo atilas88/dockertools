@@ -9,8 +9,9 @@ import {useContainers} from '../composables/useContainers'
 import {useFilter} from '../composables/useFilter'
 import {useToast} from '../composables/useToast'
 import type {ContainerAction} from '../types/docker'
+import BaseToggle from '../components/ui/BaseToggle.vue'
 
-const {items, loading, error, runningCount, runAction} = useContainers()
+const {items, loading, error, runningCount, runAction, onlyRunning} = useContainers()
 const {query, filtered} = useFilter(items)
 const {confirm} = useConfirm()
 const toast = useToast()
@@ -54,6 +55,7 @@ async function onAction(id: string, action: ContainerAction) {
   <PageHeader v-model:filter="query" title="Contenedores" :meta="meta">
     <template #actions>
       <BaseButton variant="primary" icon="plus" @click="toast.show('Demo: esta acción abriría un diálogo')">Ejecutar</BaseButton>
+      <BaseToggle v-model="onlyRunning">Solo en ejecución</BaseToggle>
     </template>
   </PageHeader>
 

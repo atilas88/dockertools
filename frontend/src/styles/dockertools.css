@@ -39,6 +39,25 @@
 .dt-input::placeholder { color: var(--ink-muted); }
 .dt-input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
+/* A native checkbox drawn as a switch: keyboard and screen readers work for free. */
+.dt-toggle {
+  display: inline-flex; align-items: center; gap: var(--space-2); height: var(--control-height);
+  font: 500 13px/1 var(--font-sans); color: var(--ink); cursor: pointer; white-space: nowrap;
+}
+.dt-toggle__input {
+  appearance: none; margin: 0; flex: none; position: relative; cursor: inherit; box-sizing: border-box;
+  width: 32px; height: 18px; border-radius: var(--radius-pill);
+  background: var(--bg-300); border: 1px solid var(--line-strong); transition: background .15s;
+}
+.dt-toggle__input::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--ink-muted); transition: transform .15s, background .15s;
+}
+.dt-toggle__input:checked { background: var(--accent); border-color: var(--accent); }
+.dt-toggle__input:checked::before { transform: translateX(14px); background: var(--on-accent); }
+.dt-toggle__input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.dt-toggle--disabled { opacity: .5; cursor: not-allowed; }
+
 .dt-sidebar {
   width: var(--sidebar-width); background: var(--bg-100); border-right: 1px solid var(--line);
   padding: var(--space-4) var(--space-2); display: flex; flex-direction: column; gap: 2px;

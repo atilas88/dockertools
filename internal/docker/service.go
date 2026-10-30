@@ -34,6 +34,13 @@ type Service struct {
 	cli dockerAPI
 }
 
+// ListOptions configures ListContainers.
+// The zero value lists all containers.
+type ListOptions struct {
+	// OnlyRunning restricts the list to running containers.
+	OnlyRunning bool
+}
+
 const (
 	defaultTimeout = 3 * time.Second
 	stopTimeout    = 15 * time.Second
@@ -112,11 +119,11 @@ func toContainer(c container.Summary) Container {
 	}
 }
 
-func (s *Service) ListContainers(ctx context.Context) ([]Container, error) {
+func (s *Service) ListContainers(ctx context.Context, options ListOptions) ([]Container, error) {
 	ctx, cancel := context.WithTimeout(ctx, defaultTimeout)
 	defer cancel()
 
-	containers, err := s.cli.ContainerList(ctx, client.ContainerListOptions{All: true})
+	containers, err := s.cli.ContainerList(ctx, client.ContainerListOptions{All: !options.OnlyRunning})
 	if err != nil {
 		return nil, fmt.Errorf("error al listar los contenedores: %w", err)
 	}

@@ -13,12 +13,14 @@ import (
 func intPtr(i int) *int { return &i }
 
 type fakeDockerAPI struct {
-	containers []container.Summary
-	err        error
-	stoppedId  string
+	containers  []container.Summary
+	err         error
+	stoppedId   string
+	listOptions client.ContainerListOptions
 }
 
 func (f *fakeDockerAPI) ContainerList(ctx context.Context, options client.ContainerListOptions) (client.ContainerListResult, error) {
+	f.listOptions = options
 	if f.err != nil {
 		return client.ContainerListResult{}, f.err
 	}
@@ -168,7 +170,7 @@ func TestStopContainer(t *testing.T) {
 	fakeAPI := &fakeDockerAPI{}
 	service := &Service{cli: fakeAPI}
 
-	err := service.StopContainer(context.Background(), "123")
+	err := service.StopContainer(t.Context(), "123")
 	if err != nil {
 		t.Fatalf("StopContainer() error = %v", err)
 	}
@@ -187,7 +189,7 @@ func TestListContainers(t *testing.T) {
 	}
 	service := &Service{cli: fakeAPI}
 
-	result, err := service.ListContainers(context.Background())
+	result, err := service.ListContainers(t.Context(), ListOptions{})
 	if err != nil {
 		t.Fatalf("ListContainers() error = %v", err)
 	}
@@ -218,7 +220,7 @@ func TestListContainers_DockerError(t *testing.T) {
 	fakeErr := errors.New("daemon error")
 	s := &Service{cli: &fakeDockerAPI{err: fakeErr}}
 
-	_, err := s.ListContainers(context.Background())
+	_, err := s.ListContainers(t.Context(), ListOptions{})
 
 	if !errors.Is(err, fakeErr) {
 		t.Errorf("err = %v, want it to wrap %v", err, fakeErr)
@@ -229,8 +231,44 @@ func TestPing(t *testing.T) {
 	fakeAPI := &fakeDockerAPI{}
 	service := &Service{cli: fakeAPI}
 
-	err := service.Ping(context.Background())
+	err := service.Ping(t.Context())
 	if err != nil {
 		t.Fatalf("Ping() error = %v", err)
+	}
+}
+
+func TestListContainers_Options(t *testing.T) {
+	testCases := []struct {
+		name    string
+		options ListOptions
+		wantAll bool
+	}{
+		{
+			name:    "List all containers",
+			options: ListOptions{},
+			wantAll: true,
+		},
+		{
+			name:    "List only running containers",
+			options: ListOptions{OnlyRunning: true},
+			wantAll: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			fakeAPI := &fakeDockerAPI{}
+			service := &Service{cli: fakeAPI}
+
+			_, err := service.ListContainers(t.Context(), tc.options)
+
+			if err != nil {
+				t.Fatalf("ListContainers() error = %v", err)
+			}
+
+			if fakeAPI.listOptions.All != tc.wantAll {
+				t.Errorf("ListContainers() All option = %v, want %v", fakeAPI.listOptions.All, tc.wantAll)
+			}
+		})
 	}
 }

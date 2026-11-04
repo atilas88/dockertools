@@ -24,9 +24,16 @@ watch(() => items.value.length > 0, hasItems => {
   if (hasItems && selectedId.value === null) selectedId.value = items.value[0].id
 }, {immediate: true})
 
-const meta = computed(() => `${runningCount.value} en ejecución · ${items.value.length} en total`)
+const emptyTextFilter = computed(() => onlyRunning.value ? 'No hay contenedores en ejecución.' : 'No hay contenedores.')
+
+const meta = computed(() => onlyRunning.value
+  ? `${items.value.length} en ejecución`
+  : `${runningCount.value} en ejecución · ${items.value.length} en total`)
+
+const scope = computed(() => onlyRunning.value ? 'contenedor en ejecución' : 'contenedor')
+
 const emptyText = computed(() =>
-  error.value ?? (query.value ? `Ningún contenedor coincide con «${query.value}».` : 'No hay contenedores.'))
+  error.value ?? (query.value ? `Ningún ${scope.value} coincide con «${query.value}».` : emptyTextFilter.value))
 
 const doneMessage: Record<ContainerAction, string> = {
   start: 'iniciado', stop: 'detenido', restart: 'reiniciado',

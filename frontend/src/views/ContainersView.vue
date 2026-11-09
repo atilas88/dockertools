@@ -19,9 +19,10 @@ const toast = useToast()
 const selectedId = ref<string | null>(null)
 const selected = computed(() => items.value.find(c => c.id === selectedId.value))
 
-// Select the first container once data arrives, like the design demo.
-watch(() => items.value.length > 0, hasItems => {
-  if (hasItems && selectedId.value === null) selectedId.value = items.value[0].id
+// Select the first container when there are items but none is selected:
+// once data arrives, or when the selected one disappears from the list.
+watch(() => items.value.length > 0 && !selected.value, needSelection => {
+  if (needSelection) selectedId.value = items.value[0].id
 }, {immediate: true})
 
 const emptyTextFilter = computed(() => onlyRunning.value ? 'No hay contenedores en ejecución.' : 'No hay contenedores.')
